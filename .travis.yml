@@ -9,7 +9,7 @@ addons:
   sonarcloud:
     organization: "jliv3"
     token:
-      secure: "$SONAR_TOKEN"
+      secure: "$SONAR_TOKEN"# encrypted value of your token
 before_install:
   # add permission execution for maven wrapper
   - chmod +x mvnw
