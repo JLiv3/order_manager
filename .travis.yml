@@ -1,0 +1,27 @@
+language: java
+install: skip
+os: linux
+dist: trusty
+jdk: oraclejdk8
+services:
+  - docker
+addons:
+  sonarcloud:
+    organization: "jliv3"
+    token:
+      secure: "$SONAR_TOKEN"
+before_install:
+  # add permission execution for maven wrapper
+  - chmod +x mvnw
+  # login docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # pull image openjdk:8u242-jdk
+  - docker pull openjdk:8u242-jdk
+script:
+  - ./mvnw clean install
+  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker
+after_success:
+  # codecov badge
+  - bash <(curl -s https://codecov.io/bash)
+  # SonarCloud
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=JLiv3_order_manager
