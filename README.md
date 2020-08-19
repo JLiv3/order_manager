@@ -4,3 +4,7 @@
 ![GitHub](https://img.shields.io/github/license/jliv3/order_manager)
 # order_manager
 Nguyễn Hùng - Quản lý đơn hàng ( Spring Boot, Security, Jpa Data, Thymeleaf, ReactJS)
+
+#research 
+[spring boot ci cd](https://www.baeldung.com/spring-boot-ci-cd)
+[applying cicd to java apps using spring boot](https://dzone.com/articles/applying-cicd-to-java-apps-using-spring-boot)
