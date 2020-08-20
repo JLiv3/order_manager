@@ -11,9 +11,13 @@ Account admin role default : admin/admin
 Account user role default : user/user
 
 Download lastest release [here](https://github.com/JLiv3/order_manager/releases) to run in localhost by cmd: 
-> java -jar <your path of file build .jar> 
+```cmd
+java -jar <your path of file build .jar
+```
 Example: 
-> java -jar %USERPROFILE%\order_manager-1.0.0.jar
+```cmd
+java -jar %USERPROFILE%\order_manager-1.0.0.jar
+```
 
 #research 
 [spring boot ci cd](https://www.baeldung.com/spring-boot-ci-cd)
