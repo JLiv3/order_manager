@@ -12,7 +12,7 @@ Account user role default : user/user
 
 Download lastest release [here](https://github.com/JLiv3/order_manager/releases) to run in localhost by cmd: 
 ```cmd
-java -jar <your path of file build .jar
+java -jar <your path of file build .jar>
 ```
 Example: 
 ```cmd
