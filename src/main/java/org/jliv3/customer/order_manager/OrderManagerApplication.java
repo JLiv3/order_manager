@@ -2,7 +2,6 @@ package org.jliv3.customer.order_manager;
 
 import org.jliv3.customer.order_manager.entity.Role;
 import org.jliv3.customer.order_manager.entity.User;
-import org.jliv3.customer.order_manager.repository.RoleRepository;
 import org.jliv3.customer.order_manager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -17,8 +16,6 @@ public class OrderManagerApplication {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -28,18 +25,15 @@ public class OrderManagerApplication {
     @PostConstruct
     @Transactional
     void builtIn() {
-        Role roleAdmin = new Role();
-        roleAdmin.setRolename("ADMIN");
-        roleAdmin.setDecription("Admin role with full power");
-        roleRepository.save(roleAdmin);
-        Role roleUser = new Role();
-        roleUser.setRolename("USER");
-        roleUser.setDecription("User role with limit power");
-        roleRepository.save(roleUser);
         User admin = new User();
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRole(roleAdmin);
+        admin.setRole(Role.ADMIN);
         userRepository.save(admin);
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword(passwordEncoder.encode("user"));
+        user.setRole(Role.USER);
+        userRepository.save(user);
     }
 }

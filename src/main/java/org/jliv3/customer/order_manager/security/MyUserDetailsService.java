@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 @Service
 @Primary
-public class UserDetail implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
@@ -24,6 +23,6 @@ public class UserDetail implements UserDetailsService {
         if (!optional.isPresent()) {
             throw new UsernameNotFoundException(username);
         }
-        return org.springframework.security.core.userdetails.User.builder().username(optional.get().getUsername()).password(optional.get().getPassword()).roles(optional.get().getRole().getRolename()).build();
+        return org.springframework.security.core.userdetails.User.withUsername(optional.get().getUsername()).password(optional.get().getPassword()).roles(optional.get().getRole()).build();
     }
 }

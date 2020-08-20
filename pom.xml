@@ -12,7 +12,7 @@
     <artifactId>order_manager</artifactId>
     <version>1.0.0</version>
     <name>order_manager</name>
-    <description>Nguyễn Hùng - Quản lý đơn hàng ( Spring Boot, Security, Jpa Data, Thymeleaf, ReactJS, MySQL )
+    <description>Nguyễn Hùng - Quản lý đơn hàng ( Spring Boot, Security, Jpa Data, Thymeleaf, AngularJS, MySQL in Production / H2 memory in Deverloper  )
     </description>
     <packaging>jar</packaging>
     <properties>
@@ -33,6 +33,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!-- optional, it brings userful tags to display spring security stuff -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

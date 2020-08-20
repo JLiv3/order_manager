@@ -6,8 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="4;/" http-equiv="refresh"/>
     <link rel="shortcut icon" th:href="@{img/favicon.png}" type="image/x-icon">
-    <title>Orders Manager</title>
+    <title>Access Denied</title>
     <script crossorigin th:src="@{js/jquery.min.js}"></script>
     <script crossorigin th:src="@{js/popper.min.js}"></script>
     <script crossorigin th:src="@{js/bootstrap.min.js}"></script>
@@ -52,11 +53,23 @@
         </ul>
     </div>
 </nav>
-<br>
-<div class="container">
-    <h1 class="bshadow">Orders Page</h1>
+<div class="container" style="margin-top:30px">
+    <div class="alert alert-danger bshadow" id="count-down">
+        <i class='fas fa-exclamation'></i>
+        <i class='fas fa-exclamation'></i>
+        <i class='fas fa-exclamation'></i>
+        Sorry, you do not have <strong>permission</strong> to view this page.
+    </div>
 </div>
-
-
+<script>
+    var countDown = 3;
+    var x = setInterval(function () {
+        document.getElementById("count-down").innerHTML = "<i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i> Redirect to Homepage in <strong>" + countDown + "</strong> second.";
+        countDown--;
+        if (distance < 0) {
+            clearInterval(x);
+        }
+    }, 1000);
+</script>
 </body>
 </html>

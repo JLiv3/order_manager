@@ -1,9 +1,6 @@
 package org.jliv3.customer.order_manager.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Builder
 public class User extends Auditor<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +21,6 @@ public class User extends Auditor<String> {
     private String username;
     @Column(nullable = false)
     private String password;
-    @ManyToOne
-    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
-    private Role role;
+    @Column(nullable = false)
+    private String role;
 }
