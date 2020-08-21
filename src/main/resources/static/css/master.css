@@ -22,6 +22,17 @@ a:hover {
     }
 }
 
-.non-boder-radius{
-    border-radius: 0; !important;
+.non-boder-radius {
+    border-radius: 0;
+!important;
+}
+
+h3 {
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+.aleart-danger {
+    color: white;
+    text-shadow: 2px 2px 4px orangered;
 }

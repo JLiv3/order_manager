@@ -4,21 +4,23 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link rel="shortcut icon" th:href="@{img/favicon.png}" type="image/x-icon">
     <title>Orders Manager</title>
-    <script crossorigin th:src="@{js/jquery.min.js}"></script>
-    <script crossorigin th:src="@{js/popper.min.js}"></script>
-    <script crossorigin th:src="@{js/bootstrap.min.js}"></script>
-    <script crossorigin th:src="@{js/angular.js}"></script>
-    <script crossorigin th:src="@{js/a076d05399.js}"></script><!--icon Font Awesome 5-->
-    <link crossorigin rel="stylesheet" th:href="@{css/bootstrap.min.css}">
-    <link crossorigin rel="stylesheet" th:href="@{css/font-awesome.min.css}">
-    <link crossorigin rel="stylesheet" th:href="@{css/master.css}">
+    <th:block th:fragment="common-head">
+        <meta charset="UTF-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <link rel="shortcut icon" th:href="@{img/favicon.png}" type="image/x-icon">
+        <script crossorigin th:src="@{js/jquery.min.js}"></script>
+        <script crossorigin th:src="@{js/popper.min.js}"></script>
+        <script crossorigin th:src="@{js/bootstrap.min.js}"></script>
+        <script crossorigin th:src="@{js/angular.js}"></script>
+        <script crossorigin th:src="@{js/a076d05399.js}"></script><!--icon Font Awesome 5-->
+        <link crossorigin rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+        <link crossorigin rel="stylesheet" th:href="@{css/font-awesome.min.css}">
+        <link crossorigin rel="stylesheet" th:href="@{css/master.css}">
+    </th:block>
 </head>
 <body>
-<nav class="navbar navbar-expand-md bg-primary navbar-dark bshadow">
+<nav class="navbar navbar-expand-md bg-primary navbar-dark bshadow" th:fragment="nav-bar">
     <a class="navbar-brand" href="/">###<span sec:authentication="name"></span>###</a>
     <button class="navbar-toggler" data-target="#collapsibleNavbar" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
@@ -53,10 +55,8 @@
     </div>
 </nav>
 <br>
-<div class="container">
-    <h1 class="bshadow">Orders Page</h1>
+<div class="container mt-2">
+    <h3>### Orders Manager ###</h3>
 </div>
-
-
 </body>
 </html>

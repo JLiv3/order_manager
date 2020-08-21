@@ -10,8 +10,8 @@ import java.util.Date;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-    @ExceptionHandler(UserExistedException.class)
-    public ResponseEntity<ApiError> handlerUserExistedException(UserExistedException existedException, WebRequest webRequest) {
-        return new ResponseEntity<>(new ApiError(new Date(), existedException.getMessage(), webRequest.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiError> handlerApiException(ApiException apiException, WebRequest webRequest) {
+        return new ResponseEntity<>(new ApiError(new Date(), apiException.getMessage(), webRequest.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

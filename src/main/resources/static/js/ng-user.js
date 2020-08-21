@@ -33,10 +33,12 @@ app.controller("usersController", function ($scope, $http) {
     }
 
     $scope.deleteUser = function (u) {
-        $http({
-            method: 'DELETE',
-            url: '/api/users/' + u.id
-        }).then(_success, _error);
+        if (confirm("Are you sure want to delete this user?")) {
+            $http({
+                method: 'DELETE',
+                url: '/api/users/' + u.id
+            }).then(_success, _error);
+        }
     }
 
     $scope.submitUsers = function () {
@@ -56,6 +58,10 @@ app.controller("usersController", function ($scope, $http) {
         }).then(_success, _error);
     }
 
+    $scope.clearData = function () {
+        _clearFormData()
+    }
+
     function _success(res) {
         $("#modelUser").modal("hide");
         _refreshUsersData();
@@ -73,6 +79,7 @@ app.controller("usersController", function ($scope, $http) {
         $scope.userFrom.id = 0;
         $scope.userFrom.username = "";
         $scope.userFrom.password = "";
-        $scope.userFrom.role = "";
+        $scope.userFrom.role = "USER";
     }
+
 });

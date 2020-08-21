@@ -6,7 +6,7 @@ import org.jliv3.customer.order_manager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +16,9 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/users")
 public class UsersRestController {
-    public static final String USERNAME_EXISTED_MESSAGE = "Username already exist, choose different one.";
-    public static final String USERID_NOT_FOUND_MESSAGE = "User not found: ";
+    public static final String USERNAME_EXISTED_MESSAGE = "Username already existed, choose different one.";
+    public static final String USER_ID_NOT_FOUND_MESSAGE = "User not found: ";
+    public static final String CANT_DELETE_YOUR_SELF_MESSAGE = "You can't delete yourself.";
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -31,41 +32,39 @@ public class UsersRestController {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findByUsername(userDTO.getUsername());
-        if (!optionalUser.isPresent()) {
-            return new ResponseEntity<>(userRepository.save(User.builder().username(userDTO.getUsername()).password(passwordEncoder.encode(userDTO.getPassword())).role(userDTO.getRole()).build()), HttpStatus.OK);
+        if (optionalUser.isPresent()) {
+            throw new ApiException(USERNAME_EXISTED_MESSAGE);
         } else {
-            throw new UserExistedException(USERNAME_EXISTED_MESSAGE);
+            return new ResponseEntity<>(userRepository.save(User.builder().username(userDTO.getUsername()).password(passwordEncoder.encode(userDTO.getPassword())).role(userDTO.getRole()).build()), HttpStatus.OK);
         }
     }
 
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
-        Optional<User> optionalUser = userRepository.findById(userDTO.getId());
-        if (optionalUser.isPresent()) {
-            if (!userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-                optionalUser.get().setUsername(userDTO.getUsername());
-                if (!userDTO.getPassword().isEmpty()) {
-                    optionalUser.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
-                }
-                optionalUser.get().setRole(userDTO.getRole());
-                return new ResponseEntity<>(userRepository.save(optionalUser.get()), HttpStatus.OK);
-            } else {
-                throw new UserExistedException(USERNAME_EXISTED_MESSAGE);
-            }
+        User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new ApiException(USER_ID_NOT_FOUND_MESSAGE + userDTO.getId()));
+        if (!user.getUsername().equals(userDTO.getUsername()) && userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new ApiException(USERNAME_EXISTED_MESSAGE);
         } else {
-            throw new UsernameNotFoundException(USERID_NOT_FOUND_MESSAGE + userDTO.getId());
+            user.setUsername(userDTO.getUsername());
+            if (!userDTO.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
+            user.setRole(userDTO.getRole());
+            return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
         }
+
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Integer userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            userRepository.delete(optionalUser.get());
-            return new ResponseEntity<>(HttpStatus.OK);
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_ID_NOT_FOUND_MESSAGE + userId));
+        if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.getUsername())) {
+            throw new ApiException(CANT_DELETE_YOUR_SELF_MESSAGE);
         } else {
-            throw new UsernameNotFoundException(USERID_NOT_FOUND_MESSAGE + userId);
+            userRepository.delete(user);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
+
     }
 }
 
