@@ -27,7 +27,7 @@
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>User Name</th>
                 <th>Role</th>
                 <th>Create Date</th>
@@ -44,12 +44,12 @@
                 <td> {{ u.lastModifiedDate | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
                 <td>
                     <a data-backdrop="static" data-target="#modelUser" data-toggle="modal" ng-click="editUser(u)">
-                        <i class='fas fa-edit' style='font-size:18px;color:cornflowerblue'>Edit</i>
+                        <i class='fas fa-edit' style='font-size:18px;color:cornflowerblue'> Edit</i>
                     </a>
                 </td>
                 <td>
                     <a ng-click="deleteUser(u) ">
-                        <i class='fas fa-trash' style='font-size:18px;color:orangered'>Delete</i>
+                        <i class='fas fa-trash' style='font-size:18px;color:orangered'> Delete</i>
                     </a>
                 </td>
             </tr>
@@ -72,7 +72,7 @@
                         <div class="form-group">
                             <label for="usename">Username:</label>
                             <input class="form-control" id="usename" name="usename" ng-model="userFrom.username"
-                                   type="text"/>
+                                   required="true" type="text"/>
                         </div>
                         <div class="form-group">
                             <label for="password">{{userFrom.type ? 'New password' : 'Password'}}:</label>

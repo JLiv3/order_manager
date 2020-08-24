@@ -25,15 +25,6 @@ public class OrderManagerApplication {
     @PostConstruct
     @Transactional
     void builtIn() {
-        User admin = new User();
-        admin.setUsername("admin");
-        admin.setPassword(passwordEncoder.encode("admin"));
-        admin.setRole(Role.ADMIN);
-        userRepository.save(admin);
-        User user = new User();
-        user.setUsername("user");
-        user.setPassword(passwordEncoder.encode("user"));
-        user.setRole(Role.USER);
-        userRepository.save(user);
+        userRepository.save(User.builder().username("admin").password(passwordEncoder.encode("admin")).role(Role.ADMIN).build());
     }
 }

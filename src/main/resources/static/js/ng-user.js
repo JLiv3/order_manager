@@ -45,6 +45,9 @@ app.controller("usersController", function ($scope, $http) {
         var method = "";
         if (!$scope.userFrom.type) {
             method = "POST";
+            if ($scope.userFrom.password === "") {
+                $scope.userFrom.password = $scope.userFrom.username;
+            }
         } else {
             method = "PUT";
         }

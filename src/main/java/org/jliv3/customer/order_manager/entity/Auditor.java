@@ -21,7 +21,7 @@ import java.util.Date;
 @Setter
 public abstract class Auditor<T> implements Serializable {
     @CreatedBy
-    protected T creatBy;
+    protected T createBy;
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     protected Date createDate;
