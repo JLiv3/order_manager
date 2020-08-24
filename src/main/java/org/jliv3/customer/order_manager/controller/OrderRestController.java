@@ -51,9 +51,6 @@ public class OrderRestController {
         }
     }
 
-    public static void main(String[] args) {
-    }
-
     @GetMapping
     public ResponseEntity<List<Order>> getALl() {
         return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);

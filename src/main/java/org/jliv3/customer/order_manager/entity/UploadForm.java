@@ -13,12 +13,4 @@ import java.util.Arrays;
 public class UploadForm {
     private Integer id;
     private MultipartFile[] files;
-
-    @Override
-    public String toString() {
-        return "UploadForm{" +
-                "id=" + id +
-                ", files=" + files[0].getOriginalFilename()  +
-                '}';
-    }
 }
