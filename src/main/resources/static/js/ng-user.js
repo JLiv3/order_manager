@@ -42,7 +42,7 @@ app.controller("usersController", function ($scope, $http) {
     }
 
     $scope.submitUsers = function () {
-        var method = "";
+        let method = "";
         if (!$scope.userFrom.type) {
             method = "POST";
             if ($scope.userFrom.password === "") {

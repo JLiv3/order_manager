@@ -4,12 +4,15 @@ app.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-            var model = $parse(attrs.fileModel);
-            var modelSetter = model.assign;
+            let model = $parse(attrs.fileModel);
+            let modelSetter = model.assign;
 
             element.bind('change', function () {
                 scope.$apply(function () {
-                    modelSetter(scope, element[0].files[0]);
+                    // for (let i = 0; i < element[0].files.length; i++) {
+                    //     modelSetter(scope[i], element[0].files[i]);
+                    // }
+                    modelSetter(scope, element[0].files);
                 });
             });
         }
@@ -24,7 +27,6 @@ app.controller("ordersController", function ($scope, $http) {
         code: "",
         name: "",
         note: "",
-        checked: false,
         files: []
     };
     // Now load the data from server
@@ -50,7 +52,6 @@ app.controller("ordersController", function ($scope, $http) {
         $scope.orderForm.code = o.code;
         $scope.orderForm.name = o.name;
         $scope.orderForm.note = o.note;
-        $scope.orderForm.checked = o.checked;
         $scope.orderForm.files = [];
         clearInputFile();
     }
@@ -59,20 +60,13 @@ app.controller("ordersController", function ($scope, $http) {
         _clearFormData()
     }
 
-    function _success(res) {
-        $("#modelOrder").modal("hide");
-        _refreshOrdersData();
-        _clearFormData();
-        alert("Success!!!");
-    }
-
     $scope.submitOrder = function () {
         let url = "/api/orders";
         const data = new FormData();
         data.append("id", $scope.orderForm.id);
-        data.append("code", $scope.orderForm.code);
-        data.append("name", $scope.orderForm.name);
-        data.append("checked", $scope.orderForm.checked);
+        data.append("code", $scope.orderForm.code.trim());
+        data.append("name", $scope.orderForm.name.trim());
+        data.append("note", $scope.orderForm.note.trim());
         for (let i = 0; i < $scope.orderForm.files.length; i++) {
             data.append("files", $scope.orderForm.files[i]);
         }
@@ -90,6 +84,13 @@ app.controller("ordersController", function ($scope, $http) {
         }
     }
 
+    function _success(res) {
+        $("#modelOrder").modal("hide");
+        _refreshOrdersData();
+        _clearFormData();
+        alert("Success!!!");
+    }
+
     function _error(res) {
         alert("Error: " + res.data.message);
     }
@@ -100,9 +101,20 @@ app.controller("ordersController", function ($scope, $http) {
         $scope.orderForm.code = "";
         $scope.orderForm.name = "";
         $scope.orderForm.note = "";
-        $scope.orderForm.checked = false;
         $scope.orderForm.files = [];
         clearInputFile();
+    }
+
+    $scope.toggleChecked = function (order) {
+        $http({
+            method: "PUT",
+            url: "/api/orders/toggleChecked",
+            data: angular.toJson(order),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        // .then(_success, _error);
     }
 
     $scope.showImg = function (imgs, id) {

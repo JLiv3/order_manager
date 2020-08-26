@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns="http://www.w3.org/1999/html"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Users Manager</title>
@@ -23,15 +22,15 @@
         </div>
     </div>
 
-    <div class="table-responsive-md bshadow">
+    <div class="table-responsive bshadow">
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
                 <th>#</th>
                 <th>User Name</th>
                 <th>Role</th>
-                <th>Create Date</th>
-                <th>Last Modified Date</th>
+                <th style="min-width: 172px">Create Date</th>
+                <th style="min-width: 172px">Last Modified Date</th>
                 <th colspan="2">Action</th>
             </tr>
             </thead>
@@ -71,13 +70,14 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="usename">Username:</label>
-                            <input class="form-control" id="usename" name="usename" ng-model="userFrom.username"
-                                   required="true" type="text"/>
+                            <input autocomplete="off" class="form-control" id="usename" name="usename"
+                                   ng-model="userFrom.username" required="true" type="text"/>
                         </div>
                         <div class="form-group">
                             <label for="password">{{userFrom.type ? 'New password' : 'Password'}}:</label>
-                            <input class="form-control" id="password" name="password" ng-model="userFrom.password"
-                                   placeholder="Enter {{userFrom.type ? 'new' : ''}} password" type="password"/>
+                            <input autocomplete="off" class="form-control" id="password" name="password"
+                                   ng-model="userFrom.password" placeholder="Enter {{userFrom.type ? 'new' : ''}} password"
+                                   type="password"/>
                         </div>
                         <div class="form-group">
                             <label for="role">Role:</label>

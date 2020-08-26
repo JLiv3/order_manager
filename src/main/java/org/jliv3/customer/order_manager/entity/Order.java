@@ -44,5 +44,6 @@ public class Order extends Auditor<String> {
         if (this.code.isEmpty()) {
             this.code = "unknow" + MySimpleDateFormat.get().format(new Date());
         }
+        this.note = this.note.replaceAll("\r\n", "; ").replaceAll("\n", "; ");
     }
 }

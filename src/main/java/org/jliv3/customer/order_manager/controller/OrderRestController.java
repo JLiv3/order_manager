@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class OrderRestController {
     public static final String ORDER_ID_NOT_FOUND_MESSAGE = "Order not found: ";
     public static final String IMG_NOT_FOUND_MESSAGE = "Image not found.";
-    public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "\\storeImage";
+    public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "/storeImage";
     @Autowired
     private OrderRepository orderRepository;
 
@@ -44,15 +45,18 @@ public class OrderRestController {
     private static void saveImg(MultipartFile[] sourceImg, Order saveIn, Path orderPath) throws IOException {
         for (MultipartFile f : sourceImg) {
             byte[] bytes = f.getBytes();
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(orderPath + "\\" + f.getOriginalFilename()));
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(orderPath + "/" + f.getOriginalFilename()));
             bufferedOutputStream.write(bytes);
             bufferedOutputStream.close();
-            saveIn.getListImg().add(FileImg.builder().fullName(orderPath + "\\" + f.getOriginalFilename()).shortName(f.getOriginalFilename()).build());
+            saveIn.getListImg().add(FileImg.builder().fullName(orderPath + "/" + f.getOriginalFilename()).shortName(f.getOriginalFilename()).build());
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getALl() {
+    public ResponseEntity<List<Order>> getALl(Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
+            return new ResponseEntity<>(orderRepository.findByCreateBy(authentication.getName()), HttpStatus.OK);
+        }
         return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);
     }
 
@@ -64,7 +68,7 @@ public class OrderRestController {
         if (orderDTO.getCode().isEmpty()) {
             orderDTO.setCode("unknow" + MySimpleDateFormat.get().format(new Date()));
         }
-        Path orderPath = Paths.get(CURRENT_IMG_DIR + "\\" + orderDTO.getCode());
+        Path orderPath = Paths.get(CURRENT_IMG_DIR + "/" + orderDTO.getCode());
         if (!Files.exists(orderPath)) {
             Files.createDirectory(orderPath);
         }
@@ -72,7 +76,6 @@ public class OrderRestController {
         order.setCode(orderDTO.getCode());
         order.setName(orderDTO.getName());
         order.setNote(orderDTO.getNote());
-        order.setChecked(orderDTO.isChecked());
         saveImg(orderDTO.getFiles(), order, orderPath);
         return new ResponseEntity<>(orderRepository.save(order), HttpStatus.OK);
     }
@@ -83,24 +86,23 @@ public class OrderRestController {
             orderDTO.setCode("unknow" + MySimpleDateFormat.get().format(new Date()));
         }
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + orderDTO.getId()));
-        String newOrderPath = CURRENT_IMG_DIR + "\\" + orderDTO.getCode();
+        String newOrderPath = CURRENT_IMG_DIR + "/" + orderDTO.getCode();
         if (!Files.exists(Paths.get(newOrderPath))) {
             Files.createDirectory(Paths.get(newOrderPath));
         }
         if (!order.getCode().equals(orderDTO.getCode())) {
-            String oldOrderPath = CURRENT_IMG_DIR + "\\" + order.getCode();
+//            String oldOrderPath = CURRENT_IMG_DIR + "/" + order.getCode();
             order.setCode(orderDTO.getCode());
             Set<FileImg> fileImgs = order.getListImg();
             for (FileImg f : fileImgs) {
-                Files.move(Paths.get(f.getFullName()), Paths.get(newOrderPath + "\\" + f.getShortName()), REPLACE_EXISTING);
+                Files.move(Paths.get(f.getFullName()), Paths.get(newOrderPath + "/" + f.getShortName()), REPLACE_EXISTING);
                 Files.deleteIfExists(Paths.get(f.getFullName()));
-                f.setFullName(newOrderPath + "\\" + f.getShortName());
+                f.setFullName(newOrderPath + "/" + f.getShortName());
             }
-            Files.deleteIfExists(Paths.get(oldOrderPath));
+//            Files.deleteIfExists(Paths.get(oldOrderPath));
         }
         order.setName(orderDTO.getName());
         order.setNote(orderDTO.getNote());
-        order.setChecked(orderDTO.isChecked());
         saveImg(orderDTO.getFiles(), order, Paths.get(newOrderPath));
         return new ResponseEntity<>(orderRepository.save(order), HttpStatus.OK);
     }
@@ -112,7 +114,16 @@ public class OrderRestController {
         FileImg img = getImgInSet(order.getListImg(), imgName);
         if (img != null) {
             InputStream in = new FileInputStream(img.getFullName());
-            return IOUtils.toByteArray(in);
+            byte[] byteStream = IOUtils.toByteArray(in);
+            in.close();
+            return byteStream;
         } else throw new ApiException(IMG_NOT_FOUND_MESSAGE);
+    }
+
+    @PutMapping("/toggleChecked")
+    public ResponseEntity<Order> toggleChecked(@RequestBody Order order) {
+        Order orderOnDB = orderRepository.findById(order.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + order.getId()));
+        orderOnDB.setChecked(!orderOnDB.isChecked());
+        return new ResponseEntity<>(orderRepository.save(orderOnDB), HttpStatus.OK);
     }
 }

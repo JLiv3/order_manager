@@ -11,14 +11,12 @@ public class OrderDTO {
     private String code;
     private String name;
     private String note;
-    private boolean checked;
     private MultipartFile[] files;
 
     public OrderDTO() {
         this.code = "";
         this.name = "";
         this.note = "";
-        this.checked = false;
         this.files = new MultipartFile[]{};
     }
 }
