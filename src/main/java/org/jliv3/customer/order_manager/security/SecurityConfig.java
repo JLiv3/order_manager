@@ -2,6 +2,7 @@ package org.jliv3.customer.order_manager.security;
 
 import org.jliv3.customer.order_manager.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(// Restrict access to our application.
                         authorize -> authorize
                                 .antMatchers("/css/**", "/img/**", "/js/**").permitAll()
+                                .antMatchers(HttpMethod.PUT, "/api/orders").hasRole(Role.ADMIN)
+                                .antMatchers(HttpMethod.PUT, "/api/orders/toggleChecked").hasRole(Role.ADMIN)
                                 .antMatchers("/users", "/trace", "/api/users").hasRole(Role.ADMIN)
                                 .anyRequest().authenticated()
                 )

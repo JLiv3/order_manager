@@ -1,10 +1,11 @@
 package org.jliv3.customer.order_manager.controller;
 
 import org.apache.commons.io.IOUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jliv3.customer.order_manager.entity.FileImg;
 import org.jliv3.customer.order_manager.entity.Order;
 import org.jliv3.customer.order_manager.entity.OrderDTO;
-import org.jliv3.customer.order_manager.repository.OrderRepository;
+import org.jliv3.customer.order_manager.service.OrderService;
 import org.jliv3.customer.order_manager.utils.MySimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class OrderRestController {
     public static final String IMG_NOT_FOUND_MESSAGE = "Image not found.";
     public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "/storeImage";
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     public static FileImg getImgInSet(Set<FileImg> source, String imgName) {
         for (FileImg f : source) {
@@ -55,13 +56,13 @@ public class OrderRestController {
     @GetMapping
     public ResponseEntity<List<Order>> getALl(Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER"))) {
-            return new ResponseEntity<>(orderRepository.findByCreateBy(authentication.getName()), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.findByCreateBy(authentication.getName()), HttpStatus.OK);
         }
-        return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@ModelAttribute OrderDTO orderDTO) throws IOException {
+    public ResponseEntity<Order> createOrder(@ModelAttribute OrderDTO orderDTO) throws IOException, ConstraintViolationException {
         if (!Files.exists(Paths.get(CURRENT_IMG_DIR))) {
             Files.createDirectory(Paths.get(CURRENT_IMG_DIR));
         }
@@ -77,15 +78,15 @@ public class OrderRestController {
         order.setName(orderDTO.getName());
         order.setNote(orderDTO.getNote());
         saveImg(orderDTO.getFiles(), order, orderPath);
-        return new ResponseEntity<>(orderRepository.save(order), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.save(order), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<Order> updateOrder(@ModelAttribute OrderDTO orderDTO) throws IOException {
+    public ResponseEntity<Order> updateOrder(@ModelAttribute OrderDTO orderDTO) throws IOException, ConstraintViolationException {
         if (orderDTO.getCode().isEmpty()) {
             orderDTO.setCode("unknow" + MySimpleDateFormat.get().format(new Date()));
         }
-        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + orderDTO.getId()));
+        Order order = orderService.findById(orderDTO.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + orderDTO.getId()));
         String newOrderPath = CURRENT_IMG_DIR + "/" + orderDTO.getCode();
         if (!Files.exists(Paths.get(newOrderPath))) {
             Files.createDirectory(Paths.get(newOrderPath));
@@ -104,13 +105,13 @@ public class OrderRestController {
         order.setName(orderDTO.getName());
         order.setNote(orderDTO.getNote());
         saveImg(orderDTO.getFiles(), order, Paths.get(newOrderPath));
-        return new ResponseEntity<>(orderRepository.save(order), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.save(order), HttpStatus.OK);
     }
 
     @GetMapping(value = "/image/{id}/{imgName}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody
     byte[] getImage(@PathVariable Integer id, @PathVariable String imgName) throws IOException {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + id));
+        Order order = orderService.findById(id).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + id));
         FileImg img = getImgInSet(order.getListImg(), imgName);
         if (img != null) {
             InputStream in = new FileInputStream(img.getFullName());
@@ -122,8 +123,8 @@ public class OrderRestController {
 
     @PutMapping("/toggleChecked")
     public ResponseEntity<Order> toggleChecked(@RequestBody Order order) {
-        Order orderOnDB = orderRepository.findById(order.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + order.getId()));
+        Order orderOnDB = orderService.findById(order.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + order.getId()));
         orderOnDB.setChecked(!orderOnDB.isChecked());
-        return new ResponseEntity<>(orderRepository.save(orderOnDB), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.save(orderOnDB), HttpStatus.OK);
     }
 }

@@ -26,7 +26,7 @@ public class Order extends Auditor<String> {
     private String name;
     private String note;
     private boolean checked;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_img_fid", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

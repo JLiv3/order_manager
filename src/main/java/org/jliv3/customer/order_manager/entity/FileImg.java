@@ -20,6 +20,19 @@ public class FileImg {
     private Integer id;
     @Column(nullable = false)
     private String shortName;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String fullName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileImg fileImg = (FileImg) o;
+        return fullName.equals(fileImg.fullName);
+    }
+
+    @Override
+    public int hashCode() {
+        return shortName.hashCode() * 257 + fullName.hashCode();
+    }
 }

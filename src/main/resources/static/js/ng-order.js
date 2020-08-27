@@ -21,6 +21,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.controller("ordersController", function ($scope, $http) {
     $scope.orders = [];
+
     $scope.orderForm = {
         type: false,
         id: 0,
@@ -29,6 +30,9 @@ app.controller("ordersController", function ($scope, $http) {
         note: "",
         files: []
     };
+
+    $scope.seacrhFilter = {};
+
     // Now load the data from server
     _refreshOrdersData();
 
@@ -103,6 +107,21 @@ app.controller("ordersController", function ($scope, $http) {
         $scope.orderForm.note = "";
         $scope.orderForm.files = [];
         clearInputFile();
+    }
+
+    $scope.countSortCheck = 0;
+
+    $scope.sortChecked = function () {
+        if ($scope.countSortCheck % 3 == 0) {
+            $scope.seacrhFilter.checked = true;
+            $scope.countSortCheck++;
+        } else if ($scope.countSortCheck % 3 == 1) {
+            $scope.seacrhFilter.checked = false;
+            $scope.countSortCheck++;
+        } else {
+            delete $scope.seacrhFilter.checked;
+            $scope.countSortCheck++;
+        }
     }
 
     $scope.toggleChecked = function (order) {

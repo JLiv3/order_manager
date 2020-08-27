@@ -25,6 +25,8 @@ public class OrderManagerApplication {
     @PostConstruct
     @Transactional
     void builtIn() {
-        userRepository.save(User.builder().username("admin").password(passwordEncoder.encode("admin")).role(Role.ADMIN).build());
+        if (!userRepository.findByUsername("admin").isPresent()) {
+            userRepository.save(User.builder().username("admin").password(passwordEncoder.encode("admin")).role(Role.ADMIN).build());
+        }
     }
 }
