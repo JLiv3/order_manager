@@ -16,9 +16,9 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/users")
 public class UsersRestController {
-    public static final String USERNAME_EXISTED_MESSAGE = "Username already existed, choose different one.";
-    public static final String USER_ID_NOT_FOUND_MESSAGE = "User not found: ";
-    public static final String CANT_DELETE_YOUR_SELF_MESSAGE = "You can't delete yourself.";
+    public static final String USERNAME_EXISTED_MESSAGE = "Tên người dùng đã tồn tại, hãy chọn tên người dùng khác.";
+    public static final String USER_ID_NOT_FOUND_MESSAGE = "Không tìm thấy người dùng: ";
+    public static final String CANT_DELETE_YOUR_SELF_MESSAGE = "Không thể xóa chính bạn.";
     @Autowired
     private UserRepository userRepository;
     @Autowired

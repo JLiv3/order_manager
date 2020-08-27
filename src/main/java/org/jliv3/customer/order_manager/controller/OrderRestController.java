@@ -28,8 +28,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderRestController {
-    public static final String ORDER_ID_NOT_FOUND_MESSAGE = "Order not found: ";
-    public static final String IMG_NOT_FOUND_MESSAGE = "Image not found.";
+    public static final String ORDER_ID_NOT_FOUND_MESSAGE = "Không tìm thấy đơn hàng: ";
+    public static final String IMG_NOT_FOUND_MESSAGE = "Không tìm thấy hình ảnh.";
     public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "/storeImage";
     @Autowired
     private OrderService orderService;

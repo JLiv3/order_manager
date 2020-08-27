@@ -11,14 +11,14 @@
 <body>
 <th:block th:insert="~{index::nav-bar}"></th:block>
 <div class="container mt-2">
-    <h4 class="aleart-danger">Sorry, you do not have permission to access this page</h4>
+    <h4 class="aleart-danger">Xin lỗi, bạn không có quyền truy cập webpage này.</h4>
     <div id="count-down">
     </div>
 </div>
 <script>
     var countDown = 3;
     var x = setInterval(function () {
-        document.getElementById("count-down").innerHTML = "<div class=\"alert alert-danger bshadow\"><i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i> Redirect to Homepage in <strong>" + countDown + "</strong> second.</div>";
+        document.getElementById("count-down").innerHTML = "<div class=\"alert alert-danger bshadow\"><i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i><i class='fas fa-exclamation'></i> Chuyển hướng đến trang chủ trong <strong>" + countDown + "</strong> giây.</div>";
         countDown--;
         if (distance < 0) {
             clearInterval(x);

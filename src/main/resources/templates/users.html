@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Users Manager</title>
@@ -10,14 +11,14 @@
 <body>
 <th:block th:insert="~{index::nav-bar}"></th:block>
 <div class="container mt-2" ng-app="usersManagerment" ng-controller="usersController">
-    <h3>### Users Manager ###</h3>
+    <h3>### Quản lý tài khoản ###</h3>
     <div class="input-group mb-3 bshadow">
-        <input class="form-control non-boder-radius" ng-model="seacrhTxt.username" placeholder="Enter text to search..."
-               type="text">
+        <input class="form-control non-boder-radius" ng-model="seacrhTxt.username"
+               placeholder="Tìm kiếm theo tên người dùng..." type="text">
         <div class="input-group-append">
             <button class="btn btn-success non-boder-radius" data-backdrop="static" data-target="#modelUser"
                     data-toggle="modal" ng-click="clearData()" type="button">
-                <i class='fas fa-plus-square' style='font-size:18px;color: white'></i> Add User
+                <i class='fas fa-plus-square' style='font-size:18px;color: white'></i> Tạo tài khoản
             </button>
         </div>
     </div>
@@ -27,11 +28,11 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>User Name</th>
-                <th>Role</th>
-                <th style="min-width: 172px">Create Date</th>
-                <th style="min-width: 172px">Last Modified Date</th>
-                <th colspan="2">Action</th>
+                <th>Tên người dùng</th>
+                <th>Phân quyền</th>
+                <th style="min-width: 172px">Thời gian tạo TK</th>
+                <th style="min-width: 172px">Thời gian chỉnh sửa TK cuối cùng</th>
+                <th colspan="2">Hành động</th>
             </tr>
             </thead>
             <tbody>
@@ -43,12 +44,12 @@
                 <td> {{ u.lastModifiedDate | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
                 <td>
                     <a data-backdrop="static" data-target="#modelUser" data-toggle="modal" ng-click="editUser(u)">
-                        <i class='fas fa-edit' style='font-size:18px;color:blue'> Edit</i>
+                        <i class='fas fa-edit' style='font-size:18px;color:blue'> Chỉnh sửa</i>
                     </a>
                 </td>
                 <td>
                     <a ng-click="deleteUser(u) ">
-                        <i class='fas fa-trash' style='font-size:18px;color:red'> Delete</i>
+                        <i class='fas fa-trash' style='font-size:18px;color:red'> Xóa</i>
                     </a>
                 </td>
             </tr>
@@ -62,37 +63,37 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">{{userFrom.type ? 'Edit' : 'Create'}} User</h4>
+                    <h4 class="modal-title">{{userFrom.type ? 'Chỉnh sửa' : 'Tạo mới'}} người dùng</h4>
                     <button class="close" data-dismiss="modal" type="button">&times;</button>
                 </div>
                 <form ng-submit="submitUsers()">
                     <!-- Modal body -->
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="usename">Username:</label>
+                            <label for="usename">Tên người dùng:</label>
                             <input autocomplete="off" class="form-control" id="usename" name="usename"
                                    ng-model="userFrom.username" required="true" type="text"/>
                         </div>
                         <div class="form-group">
-                            <label for="password">{{userFrom.type ? 'New password' : 'Password'}}:</label>
+                            <label for="password">{{userFrom.type ? 'Mật khẩu mới' : 'Mật khẩu'}}:</label>
                             <input autocomplete="off" class="form-control" id="password" name="password"
                                    ng-model="userFrom.password"
-                                   placeholder="Enter {{userFrom.type ? 'new' : ''}} password"
+                                   placeholder="Hãy điền mật khẩu {{userFrom.type ? 'mới' : ''}} "
                                    type="password"/>
                         </div>
                         <div class="form-group">
-                            <label for="role">Role:</label>
+                            <label for="role">Phân quyền:</label>
                             <select class="custom-select" id="role" name="role" ng-model="userFrom.role">
-                                <option value="ADMIN">Admin</option>
-                                <option value="USER">User</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="USER">USER</option>
                             </select>
                         </div>
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <input class="btn btn-primary" type="submit" value="Submit"/>
+                        <input class="btn btn-primary" type="submit" value="Xác nhận"/>
                         <button class="btn btn-secondary" data-dismiss="modal" type="button">
-                            Cancel
+                            Hủy
                         </button>
                     </div>
                 </form>

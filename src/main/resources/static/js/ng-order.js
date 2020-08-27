@@ -92,11 +92,11 @@ app.controller("ordersController", function ($scope, $http) {
         $("#modelOrder").modal("hide");
         _refreshOrdersData();
         _clearFormData();
-        alert("Success!!!");
+        alert("Thành công!!!");
     }
 
     function _error(res) {
-        alert("Error: " + res.data.message);
+        alert("Lỗi: " + res.data.message);
     }
 
     function _clearFormData() {

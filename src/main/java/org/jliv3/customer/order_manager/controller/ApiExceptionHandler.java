@@ -18,6 +18,6 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handlerConstraintViolationException(ConstraintViolationException constraintViolationException, WebRequest webRequest) {
-        return  new ResponseEntity<>(new ApiError(new Date(), "Duplicate image.", webRequest.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
+        return  new ResponseEntity<>(new ApiError(new Date(), "Hình ảnh bị trùng lặp.", webRequest.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

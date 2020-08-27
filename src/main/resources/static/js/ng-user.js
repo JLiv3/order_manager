@@ -33,7 +33,7 @@ app.controller("usersController", function ($scope, $http) {
     }
 
     $scope.deleteUser = function (u) {
-        if (confirm("Are you sure want to delete this user?")) {
+        if (confirm("Bạn có chắc chắn muốn xóa user này ?")) {
             $http({
                 method: 'DELETE',
                 url: '/api/users/' + u.id
@@ -69,12 +69,12 @@ app.controller("usersController", function ($scope, $http) {
         $("#modelUser").modal("hide");
         _refreshUsersData();
         _clearFormData();
-        alert("Success!!!");
+        alert("Thành công !!!");
     }
 
     function _error(res) {
         // console.log(res)
-        alert("Error: " + res.data.message);
+        alert("Lỗi: " + res.data.message);
     }
 
     function _clearFormData() {
