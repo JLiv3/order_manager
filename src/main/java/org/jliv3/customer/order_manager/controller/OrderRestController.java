@@ -8,6 +8,8 @@ import org.jliv3.customer.order_manager.entity.OrderDTO;
 import org.jliv3.customer.order_manager.service.OrderService;
 import org.jliv3.customer.order_manager.utils.MySimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -30,6 +33,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class OrderRestController {
     public static final String ORDER_ID_NOT_FOUND_MESSAGE = "Không tìm thấy đơn hàng: ";
     public static final String IMG_NOT_FOUND_MESSAGE = "Không tìm thấy hình ảnh.";
+    public static final String NO_ACCESS_MODIFIED_IMG_MESSAGE = "Bạn không có quyền chỉnh sửa đơn này.";
     public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "/storeImage";
     @Autowired
     private OrderService orderService;
@@ -82,11 +86,15 @@ public class OrderRestController {
     }
 
     @PutMapping
-    public ResponseEntity<Order> updateOrder(@ModelAttribute OrderDTO orderDTO) throws IOException, ConstraintViolationException {
+    public ResponseEntity<Order> updateOrder(@ModelAttribute OrderDTO orderDTO, Authentication authentication) throws IOException, ConstraintViolationException {
         if (orderDTO.getCode().isEmpty()) {
             orderDTO.setCode("unknow" + MySimpleDateFormat.get().format(new Date()));
         }
         Order order = orderService.findById(orderDTO.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + orderDTO.getId()));
+
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_USER")) && !order.getCreateBy().equals(authentication.getName())) {
+            throw new ApiException(NO_ACCESS_MODIFIED_IMG_MESSAGE);
+        }
         String newOrderPath = CURRENT_IMG_DIR + "/" + orderDTO.getCode();
         if (!Files.exists(Paths.get(newOrderPath))) {
             Files.createDirectory(Paths.get(newOrderPath));
@@ -109,15 +117,15 @@ public class OrderRestController {
     }
 
     @GetMapping(value = "/image/{id}/{imgName}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody
-    byte[] getImage(@PathVariable Integer id, @PathVariable String imgName) throws IOException {
+    @Cacheable("images")
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id, @PathVariable String imgName) throws IOException {
         Order order = orderService.findById(id).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + id));
         FileImg img = getImgInSet(order.getListImg(), imgName);
         if (img != null) {
             InputStream in = new FileInputStream(img.getFullName());
             byte[] byteStream = IOUtils.toByteArray(in);
             in.close();
-            return byteStream;
+            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(180, TimeUnit.MINUTES)).body(byteStream);
         } else throw new ApiException(IMG_NOT_FOUND_MESSAGE);
     }
 
@@ -126,5 +134,13 @@ public class OrderRestController {
         Order orderOnDB = orderService.findById(order.getId()).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + order.getId()));
         orderOnDB.setChecked(!orderOnDB.isChecked());
         return new ResponseEntity<>(orderService.save(orderOnDB), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<?> deleteOrder(@PathVariable("orderId") Integer orderId) {
+        Order order = orderService.findById(orderId).orElseThrow(() -> new ApiException(ORDER_ID_NOT_FOUND_MESSAGE + orderId));
+        orderService.delete(order);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 }

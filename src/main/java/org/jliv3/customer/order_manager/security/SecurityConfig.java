@@ -28,16 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .csrf().disable()
-                .headers(//xss protection
-                        headers -> headers
-                                .xssProtection(xss -> xss
-                                        .block(false)
-                                )
-                )
+                .headers().disable()
                 .authorizeRequests(// Restrict access to our application.
                         authorize -> authorize
                                 .antMatchers("/css/**", "/img/**", "/js/**").permitAll()
-                                .antMatchers(HttpMethod.PUT, "/api/orders").hasRole(Role.ADMIN)
+                                .antMatchers(HttpMethod.PUT, "/api/orders").hasAnyRole(Role.getRoles())
+                                .antMatchers(HttpMethod.DELETE, "/api/orders").hasRole(Role.ADMIN)
                                 .antMatchers(HttpMethod.PUT, "/api/orders/toggleChecked").hasRole(Role.ADMIN)
                                 .antMatchers("/users", "/trace", "/api/users").hasRole(Role.ADMIN)
                                 .anyRequest().authenticated()

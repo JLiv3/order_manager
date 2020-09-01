@@ -33,7 +33,7 @@ app.controller("usersController", function ($scope, $http) {
     }
 
     $scope.deleteUser = function (u) {
-        if (confirm("Bạn có chắc chắn muốn xóa user này ?")) {
+        if (confirm("Bạn có chắc chắn muốn xóa người dùng này ?")) {
             $http({
                 method: 'DELETE',
                 url: '/api/users/' + u.id

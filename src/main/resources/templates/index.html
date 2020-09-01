@@ -78,7 +78,8 @@
                 <th style="min-width: 172px">Ngày tạo</th>
                 <th>Người tạo</th>
                 <th ng-click="sortChecked(this)" sec:authorize="hasRole('ADMIN')">Đã kiểm tra</th>
-                <th sec:authorize="hasRole('ADMIN')">Hành động</th>
+                <th colspan="2" sec:authorize="hasRole('ADMIN')">Hành động</th>
+                <th sec:authorize="hasRole('USER')">Hành động</th>
             </tr>
             </thead>
             <tbody>
@@ -104,9 +105,14 @@
                         <label class="custom-control-label" for="{{o.id}}"></label>
                     </div>
                 </td>
-                <td sec:authorize="hasRole('ADMIN')">
+                <td>
                     <a data-backdrop="static" data-target="#modelOrder" data-toggle="modal" ng-click="editOrder(o)">
                         <i class='fas fa-edit' style='font-size:18px;color:blue'> Chỉnh sửa</i>
+                    </a>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <a ng-click="deleteOrder(o) ">
+                        <i class='fas fa-trash' style='font-size:18px;color:red'> Xóa</i>
                     </a>
                 </td>
             </tr>

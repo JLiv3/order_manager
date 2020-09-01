@@ -109,6 +109,15 @@ app.controller("ordersController", function ($scope, $http) {
         clearInputFile();
     }
 
+    $scope.deleteOrder = function (o) {
+        if (confirm("Bạn có chắc chắn muốn xóa đơn hàng này ?")) {
+            $http({
+                method: 'DELETE',
+                url: '/api/orders/' + o.id
+            }).then(_success, _error);
+        }
+    }
+
     $scope.countSortCheck = 0;
 
     $scope.sortChecked = function () {

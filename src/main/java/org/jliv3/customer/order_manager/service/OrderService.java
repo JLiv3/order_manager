@@ -30,4 +30,11 @@ public class OrderService {
     public Order save(Order order) {
         return orderRepository.save(order);
     }
+
+    @Transactional
+    public void delete(Order order) {
+        orderRepository.delete(order);
+    }
 }
+
+
