@@ -31,7 +31,6 @@ public class UsersRestController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
-        System.out.println(userDTO);
         Optional<User> optionalUser = userRepository.findByUsername(userDTO.getUsername());
         if (optionalUser.isPresent()) {
             throw new ApiException(USERNAME_EXISTED_MESSAGE);
@@ -65,7 +64,6 @@ public class UsersRestController {
             userRepository.delete(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-
     }
 }
 

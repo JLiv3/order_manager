@@ -66,7 +66,7 @@ app.controller("usersController", function ($scope, $http) {
     }
 
     function _success(res) {
-        $("#modelUser").modal("hide");
+        $("#modalUser").modal("hide");
         _refreshUsersData();
         _clearFormData();
         alert("Thành công !!!");

@@ -32,8 +32,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequestMapping("/api/orders")
 public class OrderRestController {
     public static final String ORDER_ID_NOT_FOUND_MESSAGE = "Không tìm thấy đơn hàng: ";
-    public static final String IMG_NOT_FOUND_MESSAGE = "Không tìm thấy hình ảnh.";
-    public static final String NO_ACCESS_MODIFIED_IMG_MESSAGE = "Bạn không có quyền chỉnh sửa đơn này.";
+    public static final String IMG_NOT_FOUND_MESSAGE = "Không tìm thấy hình ảnh đơn hàng.";
+    public static final String NO_ACCESS_MODIFIED_IMG_MESSAGE = "Bạn không có quyền chỉnh sửa đơn hàng.";
     public static final String CURRENT_IMG_DIR = System.getProperty("user.dir") + "/storeImage";
     @Autowired
     private OrderService orderService;
@@ -100,7 +100,6 @@ public class OrderRestController {
             Files.createDirectory(Paths.get(newOrderPath));
         }
         if (!order.getCode().equals(orderDTO.getCode())) {
-//            String oldOrderPath = CURRENT_IMG_DIR + "/" + order.getCode();
             order.setCode(orderDTO.getCode());
             Set<FileImg> fileImgs = order.getListImg();
             for (FileImg f : fileImgs) {
@@ -108,7 +107,6 @@ public class OrderRestController {
                 Files.deleteIfExists(Paths.get(f.getFullName()));
                 f.setFullName(newOrderPath + "/" + f.getShortName());
             }
-//            Files.deleteIfExists(Paths.get(oldOrderPath));
         }
         order.setName(orderDTO.getName());
         order.setNote(orderDTO.getNote());
@@ -125,7 +123,7 @@ public class OrderRestController {
             InputStream in = new FileInputStream(img.getFullName());
             byte[] byteStream = IOUtils.toByteArray(in);
             in.close();
-            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(180, TimeUnit.MINUTES)).body(byteStream);
+            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS)).body(byteStream);
         } else throw new ApiException(IMG_NOT_FOUND_MESSAGE);
     }
 

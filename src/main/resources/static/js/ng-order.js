@@ -1,4 +1,4 @@
-var app = angular.module("ordersManagerment", []);
+let app = angular.module("ordersManagerment", ['ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
@@ -21,7 +21,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.controller("ordersController", function ($scope, $http) {
     $scope.orders = [];
-
+    $scope.seacrhFilter = {};
     $scope.orderForm = {
         type: false,
         id: 0,
@@ -30,11 +30,11 @@ app.controller("ordersController", function ($scope, $http) {
         note: "",
         files: []
     };
-
-    $scope.seacrhFilter = {};
-
-    // Now load the data from server
-    _refreshOrdersData();
+    $scope.currentPage = 1;
+    $scope.maxSize = 5;
+    $scope.totalItems = 0;
+    $scope.itemsPerPage = 5;
+    $scope.filteredOrders = [];
 
     function _refreshOrdersData() {
         $http({
@@ -43,12 +43,22 @@ app.controller("ordersController", function ($scope, $http) {
         }).then(
             function (res) { // success
                 $scope.orders = res.data;
+                $scope.totalItems = $scope.orders.length;
+                $scope.filteredOrders = $scope.orders.slice(0, $scope.itemsPerPage);
             },
             function (res) { // error
                 console.log("Error: " + res.status + " : " + res.data);
             }
         );
     }
+
+    // Now load the data from server
+    _refreshOrdersData();
+
+    $scope.pageChanged = function () {
+        let begin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        $scope.filteredOrders = $scope.orders.slice(begin, begin + $scope.itemsPerPage);
+    };
 
     $scope.editOrder = function (o) {
         $scope.orderForm.type = true;
@@ -58,11 +68,11 @@ app.controller("ordersController", function ($scope, $http) {
         $scope.orderForm.note = o.note;
         $scope.orderForm.files = [];
         clearInputFile();
-    }
+    };
 
     $scope.clearData = function () {
         _clearFormData()
-    }
+    };
 
     $scope.submitOrder = function () {
         let url = "/api/orders";
@@ -86,10 +96,10 @@ app.controller("ordersController", function ($scope, $http) {
         } else {
             $http.post(url, data, config).then(_success, _error);
         }
-    }
+    };
 
     function _success(res) {
-        $("#modelOrder").modal("hide");
+        $("#modalOrder").modal("hide");
         _refreshOrdersData();
         _clearFormData();
         alert("Thành công!!!");
@@ -116,7 +126,7 @@ app.controller("ordersController", function ($scope, $http) {
                 url: '/api/orders/' + o.id
             }).then(_success, _error);
         }
-    }
+    };
 
     $scope.countSortCheck = 0;
 
@@ -131,7 +141,7 @@ app.controller("ordersController", function ($scope, $http) {
             delete $scope.seacrhFilter.checked;
             $scope.countSortCheck++;
         }
-    }
+    };
 
     $scope.toggleChecked = function (order) {
         $http({
@@ -143,7 +153,7 @@ app.controller("ordersController", function ($scope, $http) {
             }
         })
         // .then(_success, _error);
-    }
+    };
 
     $scope.showImg = function (imgs, id) {
         let ca = document.getElementById("carousel-indicators");
@@ -156,5 +166,5 @@ app.controller("ordersController", function ($scope, $http) {
         });
         ca.firstChild.classList.add("active");
         ci.firstChild.classList.add("active");
-    }
+    };
 })
