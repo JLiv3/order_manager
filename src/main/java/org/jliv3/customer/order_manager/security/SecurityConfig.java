@@ -30,9 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .csrf().disable()
-                .requiresChannel(//Redirect to HTTPS
-                        channel -> channel.anyRequest().requiresSecure()
-                )
+//                .requiresChannel(//Redirect to HTTPS
+//                        channel -> channel.anyRequest().requiresSecure()
+//                )
                 .headers().disable()
                 .authorizeRequests(// Restrict access to our application.
                         authorize -> authorize
