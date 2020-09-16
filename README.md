@@ -6,20 +6,24 @@
 # order_manager
 Nguyễn Hùng - Quản lý đơn hàng (Spring Boot, Security, Data Jpa, Thymeleaf, AngularJS, MySQL in Production / H2 memory in Deverlopment )
 
-1, Live demo: [Click here](https://order-manag3r.herokuapp.com/).  
- - Account admin role default : admin/admin.  
- - Account user role default : user/user.  
+1, Live demo: [Click vào đây](https://order-manag3r.herokuapp.com/).  
+- Tài khoản admin defaul : admin/admin.  
 
-2, Download lastest release [here](https://github.com/JLiv3/order_manager/releases) to run in localhost by cmd: 
+2, Download release tại [đây](https://github.com/JLiv3/order_manager/releases), chạy localhost bằng command: 
 ```cmd
 java -jar <your path of file build .jar>
 ```
-Example: 
+Ví dụ: 
 ```cmd
-java -jar %USERPROFILE%\order_manager-1.0.0.jar
+java -jar %USERPROFILE%\order_manager-1.0.3.jar
 ```
-Require: Jre or Jdk8.
+Yêu cầu: Jre or Jdk8.
 
-#research 
-[spring boot ci cd](https://www.baeldung.com/spring-boot-ci-cd)
-[applying cicd to java apps using spring boot](https://dzone.com/articles/applying-cicd-to-java-apps-using-spring-boot)
+3, Tính năng: 
+- Có phân quyền 2 role: admin ( full quyền ) ; user. 
+- Responsive trên cả PC desktop lẫn mobile. 
+- Order page: Thông tin về các đơn hàng như mã đơn; số lượng kiểm đếm, hình ảnh; người tạo đơn, ngày tạo đơn; tạo mới / sửa / xóa đơn; hình ảnh có action view lớn riêng theo carousel; paging; phân quyền admin sẽ đc duyệt đơn / view all các đơn / sửa đơn / xóa đơn; user chỉ đc view các đơn của chính user đó tạo / chỉ được quyền sửa đơn. |
+- User page: Chỉ admin mới có quyền truy cập page; tạo mới / sửa / xóa tài khoản. 
+- Multi lang: English / VN. 
+- Apply CI/CD: sử dụng travis-ci kết hợp với docker; demo deloy trên free host heroku; codecov ; sonarcloud.
+
