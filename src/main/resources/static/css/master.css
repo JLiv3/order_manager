@@ -108,10 +108,6 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-.hidden{
-    visibility: hidden;
-}
-
 .pagination {
     display: inline-block;
     padding-left: 0;

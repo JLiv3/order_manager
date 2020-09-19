@@ -21,7 +21,10 @@ app.directive('fileModel', ['$parse', function ($parse) {
 
 app.controller("ordersController", function ($scope, $http) {
     $scope.orders = [];
-    $scope.seacrhFilter = {};
+    $scope.seacrhFilter = {
+        code: "",
+        createBy: ""
+    };
     $scope.orderForm = {
         type: false,
         id: 0,
@@ -33,8 +36,9 @@ app.controller("ordersController", function ($scope, $http) {
     $scope.currentPage = 1;
     $scope.maxSize = 5;
     $scope.totalItems = 0;
-    $scope.itemsPerPage = 5;
+    $scope.itemsPerPage = 30;
     $scope.filteredOrders = [];
+    $scope.hidePagination = false;
 
     function _refreshOrdersData() {
         $http({
@@ -43,7 +47,14 @@ app.controller("ordersController", function ($scope, $http) {
         }).then(
             function (res) { // success
                 $scope.orders = res.data;
+                if ($scope.seacrhFilter.code != "") {
+                    $scope.orders = $scope.orders.filter(o => o.code.includes($scope.seacrhFilter.code));
+                }
+                if ($scope.seacrhFilter.createBy != "") {
+                    $scope.orders = $scope.orders.filter(o => o.createBy.includes($scope.seacrhFilter.createBy));
+                }
                 $scope.totalItems = $scope.orders.length;
+                $scope.hidePagination = $scope.totalItems < $scope.itemsPerPage;
                 $scope.filteredOrders = $scope.orders.slice(0, $scope.itemsPerPage);
             },
             function (res) { // error
@@ -154,6 +165,18 @@ app.controller("ordersController", function ($scope, $http) {
         })
         // .then(_success, _error);
     };
+
+    $scope.search = function () {
+        _refreshOrdersData();
+    }
+
+    $scope.loadListImg = function (o) {
+        o.listImg.forEach(
+            img => {
+                document.getElementById(o.id).innerHTML += '<img class="img-thumbnail img-thumbnail-inTable" src="/api/orders/image/' + o.id + '/' + img.shortName + '"/>';
+            }
+        )
+    }
 
     $scope.showImg = function (imgs, id) {
         let ca = document.getElementById("carousel-indicators");
