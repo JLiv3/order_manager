@@ -70,8 +70,11 @@
     <div class="input-group mb-3 bshadow">
         <input class="form-control non-boder-radius" ng-model="seacrhFilter.code"
                th:placeholder="#{placeholder.orderid}" type="text"/>
-        <input class="form-control non-boder-radius" ng-model="seacrhFilter.createBy"
-               sec:authorize="hasRole('ADMIN')" th:placeholder="#{placeholder.createby}" type="text"/>
+        <select class="custom-select" ng-model="seacrhFilter.checked">
+            <option selected th:text="#{select.all}" value="all"></option>
+            <option th:text="#{select.checked}" value="checked"></option>
+            <option th:text="#{select.unchecked}" value="unchecked"></option>
+        </select>
         <div class="input-group-append">
             <button class="btn btn-info non-boder-radius" ng-click="search()">
                 <i class='fas fa-search' style='font-size:18px;color: white'></i>
@@ -98,7 +101,7 @@
                 <th style="min-width: 360px" th:text="#{thead.order.img}"></th>
                 <th style="min-width: 172px" th:text="#{thead.order.createdate}"></th>
                 <th th:text="#{thead.order.creater}"></th>
-                <th ng-click="sortChecked(this)" sec:authorize="hasRole('ADMIN')" th:text="#{thead.order.checked}"></th>
+                <th sec:authorize="hasRole('ADMIN')" th:text="#{thead.order.checked}"></th>
                 <th colspan="2" sec:authorize="hasRole('ADMIN')" th:text="#{thead.order.action}"></th>
                 <th sec:authorize="hasRole('USER')" th:text="#{thead.order.action}"></th>
             </tr>
@@ -114,7 +117,7 @@
                         Load Image
                     </button>
                     <span data-backdrop="static" data-target="#modalImg" data-toggle="modal"
-                          id="{{ o.id }}" ng-click="showImg(o.listImg, o.id)">
+                          id="{{ o.id + o.code }}" ng-click="showImg(o.listImg, o.id)">
                     </span>
                 </td>
                 <td ng-class="{'checked-style' : o.checked}"> {{ o.createDate | date:

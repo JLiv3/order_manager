@@ -23,7 +23,8 @@ app.controller("ordersController", function ($scope, $http) {
     $scope.orders = [];
     $scope.seacrhFilter = {
         code: "",
-        createBy: ""
+        checked: "all"
+
     };
     $scope.orderForm = {
         type: false,
@@ -50,8 +51,10 @@ app.controller("ordersController", function ($scope, $http) {
                 if ($scope.seacrhFilter.code != "") {
                     $scope.orders = $scope.orders.filter(o => o.code.includes($scope.seacrhFilter.code));
                 }
-                if ($scope.seacrhFilter.createBy != "") {
-                    $scope.orders = $scope.orders.filter(o => o.createBy.includes($scope.seacrhFilter.createBy));
+                if ($scope.seacrhFilter.checked == "checked") {
+                    $scope.orders = $scope.orders.filter(o => o.checked);
+                } else if ($scope.seacrhFilter.checked == "unchecked") {
+                    $scope.orders = $scope.orders.filter(o => !o.checked);
                 }
                 $scope.totalItems = $scope.orders.length;
                 $scope.hidePagination = $scope.totalItems < $scope.itemsPerPage;
@@ -139,21 +142,6 @@ app.controller("ordersController", function ($scope, $http) {
         }
     };
 
-    $scope.countSortCheck = 0;
-
-    $scope.sortChecked = function () {
-        if ($scope.countSortCheck % 3 == 0) {
-            $scope.seacrhFilter.checked = true;
-            $scope.countSortCheck++;
-        } else if ($scope.countSortCheck % 3 == 1) {
-            $scope.seacrhFilter.checked = false;
-            $scope.countSortCheck++;
-        } else {
-            delete $scope.seacrhFilter.checked;
-            $scope.countSortCheck++;
-        }
-    };
-
     $scope.toggleChecked = function (order) {
         $http({
             method: "PUT",
@@ -168,15 +156,16 @@ app.controller("ordersController", function ($scope, $http) {
 
     $scope.search = function () {
         _refreshOrdersData();
-    }
+    };
 
     $scope.loadListImg = function (o) {
+        let e = document.getElementById(o.id + o.code);
         o.listImg.forEach(
             img => {
-                document.getElementById(o.id).innerHTML += '<img class="img-thumbnail img-thumbnail-inTable" src="/api/orders/image/' + o.id + '/' + img.shortName + '"/>';
+                e.innerHTML += '<img class="img-thumbnail img-thumbnail-inTable" src="/api/orders/image/' + o.id + '/' + img.shortName + '"/>';
             }
         )
-    }
+    };
 
     $scope.showImg = function (imgs, id) {
         let ca = document.getElementById("carousel-indicators");
