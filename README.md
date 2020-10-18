@@ -27,3 +27,47 @@ Yêu cầu: Jre or Jdk8.
 - Multi lang: English / VN. 
 - Apply CI/CD: sử dụng travis-ci kết hợp với docker; demo deloy trên free host heroku; codecov ; sonarcloud.
 
+4, Hướng dẫn deloy trên linux: 
+- Install java trên máy linux: 
+```bash
+apt-get update
+apt-get install openjdk-8-jdk
+```
+- Install MySQL trên máy linux:  
+```bash
+apt update
+apt upgrade
+wget -c https://repo.mysql.com//mysql-apt-config_0.8.13-1_all.deb
+dpkg -i mysql-apt-config_0.8.13-1_all.deb
+apt-get install mysql-server
+mysql_secure_installation
+```
+- Create DB trên máy linux:  
+```bash
+mysql -u root -p
+create DATABASE `order_manager` CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+- Download file build jar tại [đây](https://github.com/JLiv3/order_manager/releases/tag/1.0.3)
+- Copy file build jar từ máy window đến máy linux: Trên máy window mở cmd thực hiện lệnh   
+```cmd
+scp -P <port ssh> <path file build jar> root@<ip máy linux>:/root
+```
+ví dụ:
+```cmd
+scp -P 22 C:\GitHub\order_manager\target\order_manager-1.0.3.jar root@192.168.0.11:/root
+```
+- Create shell run trên máy linux tại thư mục root chứa file jar:
+```bash
+echo -e 'java -jar order_manager-1.0.3.jar' > run.sh
+chmod +x run.sh
+```
+- Chạy file jar trên máy linux tại thư mục root: 
+```bash
+nohup ./run.sh &
+exit
+```
+- Dừng process chạy file jar trên máy linux ( để update file jar khác ): 
+```bash
+ps -ef <sau đó xem PID của process đang khởi chạy file jar với dòng lệnh <java -jar order_manager-1.0.3.jar>>
+kill PID <theo PID của process ở bước bên trên>
+```
