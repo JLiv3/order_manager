@@ -48,6 +48,7 @@ mysql -u root -p
 create DATABASE `order_manager` CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
 - Download file build jar tại [đây](https://github.com/JLiv3/order_manager/releases/tag/1.0.3)
+- Mở file jar bằng winrar trên window và sửa thông tin file order_manager-1.0.3.jar\BOOT-INF\classes\application.properties với key spring.datasource.password match với password tài khoản root của MySql vừa tạo ở bước trên. Đang để mặc định là 123@123123
 - Copy file build jar từ máy window đến máy linux: Trên máy window mở cmd thực hiện lệnh   
 ```cmd
 scp -P <port ssh> <path file build jar> root@<ip máy linux>:/root
